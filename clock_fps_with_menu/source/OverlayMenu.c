@@ -5,7 +5,7 @@ static u8 *menuEntries[10] =
     "Disable Clock", // 0
     "Display Clock only", // 1
     "Display Clock + Battery", // 2
-    "12 Hour Clock", // 3
+    "24 Hour Clock", // 3
     "Enable/Disable Battery percentage", // 4
     "Change Clock widget's screen", // 5
     "Disable FPS Counter", // 6
