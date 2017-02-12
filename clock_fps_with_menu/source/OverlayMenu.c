@@ -9,7 +9,7 @@ static u8 *menuEntries[11] =
     "24 Hour Clock", // 3
     "Enable/Disable Battery percentage", // 4
     "Change Clock widget's screen", // 5
-    "Disable FPS Counter", // 6
+    "Enable FPS Counter", // 6
     "Display FPS of both screens", // 7
     "Display FPS of Top Screen", // 8
     "Display FPS of Bottom Screen", // 9
