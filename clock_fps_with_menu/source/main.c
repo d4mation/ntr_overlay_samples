@@ -6,6 +6,7 @@ FS_archive  sdmcArchive = { 0x9, (FS_path){ PATH_EMPTY, 1, (u8*)"" } };
 Handle      fsUserHandle = 0;
 u32         IoBasePad;
 
+u32         g_slowLevel = 0;
 u32         g_percentage = 0;
 u32         g_clockScreen = 1;
 u32         g_clockType = 1; // 0 = 24 Hour, 1 = 12 Hour
@@ -35,12 +36,32 @@ NTR will invalidate data cache of the framebuffer before calling overlay callbac
 return 0 when the framebuffer was modified. return 1 when nothing in the framebuffer was modified.
 */
 
+#define TICKS_PER_SEC 0xFFB3D58
+
+void    SlowMode(void)
+{
+    static u64 lastTick = 0;
+
+    u64     framelimit = TICKS_PER_SEC / g_slowLevel;
+
+    while (svc_getSystemTick() - lastTick < framelimit);
+    lastTick = svc_getSystemTick();
+}
+
 u32     OverlayCallback(u32 isBottom, u32 addr, u32 addrB, u32 stride, u32 format) 
 {
+    if (!addr)
+         (1);
     // Set settings for draw functions
     OvSettings(addr, addrB, stride, format, !isBottom);
 
     int framebufWasModified = 0;
+
+    // SlowMode ?
+    if (g_slowLevel != 0)
+    {
+        SlowMode();
+    }
 
     // Check for menu
     if (!isBottom)

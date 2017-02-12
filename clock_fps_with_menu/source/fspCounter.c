@@ -21,7 +21,6 @@ int DrawFPSCounter(u32 isBottom)
         fps[isBottom] = 64.0 / ((double)(diff) / TICKS_PER_MSEC / 1000.0) * 10.0;
     }
 
-
     OvDrawTranspartBlackRect(14, 9, 64, 12, 1);
 
     

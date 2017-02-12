@@ -21,7 +21,9 @@ Result  MCU_GetBatteryLevel(u8* out);
 #define RED         255,0,0
 #define BLANK       255,255,255
 
-void    GetTimeString(char *output, u32 clockType)
+static char * g_speriod[] = { "AM", "PM"};
+
+int    GetTimeString(char *output, u32 clockType)
 {
     u64 timeInSeconds = osGetTime() / 1000;
     u64 dayTime = timeInSeconds % SECONDS_IN_DAY;
@@ -29,15 +31,15 @@ void    GetTimeString(char *output, u32 clockType)
     u8 hour = dayTime / SECONDS_IN_HOUR;
     u8 min = (dayTime % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
     u8 seconds = dayTime % SECONDS_IN_MINUTE;
+
+    int period = 0;
     
-    if (clockType == 1) {
-        
-        char period[3] = {'A', 'M', '\0'};
-        
+    if (clockType == 1)
+    {        
         // Handle AM/PM
         if (hour == 0 || hour >= 12)
         {
-            period[0] = 'P';
+            period = 1;
         }
     
         // 12 Hour Clock because 'merica
@@ -48,22 +50,19 @@ void    GetTimeString(char *output, u32 clockType)
         else if (hour > 12)
         {
             hour = hour - 12;
-        }
-        
-        xsprintf(output, "%02d:%02d %s", hour, min, period);
-        
+        }        
     }
-    else
-    {
-        xsprintf(output, "%02d:%02d", hour, min);
-    }
+
+    xsprintf(output, "%02d:%02d", hour, min);
+
+    return (period);
     
 }
 
 int     DrawClockAndBattery(int isBottom, u32 percent, u32 clockType) 
 {
     static u32      batval = 0;
-    static u8      batPercent = 0;
+    static u8       batPercent = 0;
     static u64      tick = 0;
 
     if (svc_getSystemTick() >= tick)
@@ -98,18 +97,19 @@ int     DrawClockAndBattery(int isBottom, u32 percent, u32 clockType)
     char buf[30] = {0}; 
     
     u32 xPos = 338;
-    u32 batteryX = xPos; // This value is separate as it is also the same Position, 12 hour or not
+    u32 batteryX = xPos;
     u32 width = 57;
     
     // If it is a 12 hour clock, adjust things slightly
-    if ( clockType == 1 ) {
-        xPos = 320;
-        width = 75;
+    if (clockType == 1)
+    {
+        xPos = 326;
+        width = 69;
     }
 
     //DrawBackground
-    // From Left, From Top, Width, Height, Transparency?
     OvDrawTranspartBlackRect(ADJ(xPos, isBottom), 9, width, 12, 1);
+    xPos += 3;
 
     // Draw battery
     OvDrawRect(ADJ(batteryX + 36, isBottom), 11, 18, 1, BLANK);
@@ -117,10 +117,11 @@ int     DrawClockAndBattery(int isBottom, u32 percent, u32 clockType)
     OvDrawRect(ADJ(batteryX + 36, isBottom), 11, 1, 8, BLANK);
     OvDrawRect(ADJ(batteryX + 53, isBottom), 11, 1, 8, BLANK);
 
-    if (batval >= 4)
+    if (batval >= 11)
         OvDrawRect(ADJ(batteryX + 37, isBottom), 12, batval, 6, LIMEGREEN);
-    else if (batval >= 2 && batval <= 3)
+    else if (batval >= 5 && batval <= 8)
         OvDrawRect(ADJ(batteryX + 37, isBottom), 12, batval, 6, ORANGE);
+
     else 
         OvDrawRect(ADJ(batteryX + 37, isBottom), 12, batval, 6, RED);
 
@@ -138,8 +139,11 @@ int     DrawClockAndBattery(int isBottom, u32 percent, u32 clockType)
 
 
     // Draw clock
-    GetTimeString(buf, clockType);
-    OvDrawString(buf, ADJ(xPos + 3, isBottom), 11, BLANK);
+    int period = GetTimeString(buf, clockType);
+    OvDrawString(buf, ADJ(xPos, isBottom), 11, BLANK);
+    xPos += 31;
+    if (clockType == 1)
+        OvDrawString(g_speriod[period], ADJ(xPos, isBottom), 11, BLANK);
 
     return (1);
 }
@@ -149,21 +153,23 @@ int     DrawClockOnly(int isBottom, u32 clockType)
 
     char buf[30] = {0};
 
-    GetTimeString(buf, clockType);
+    int period = GetTimeString(buf, clockType);
     
     u32 xPos = 352;
-    u32 width = 38;
+    u32 width = 33;
     
     // If it is a 12 hour clock, adjust things slightly
-    if ( clockType == 1 ) {
+    if ( clockType == 1 )
+    {
         xPos = 339;
-        width = 51;
+        width = 46;
     }
 
     //DrawBackground
-    // From Left, From Top, Width, Height, Transparency?
     OvDrawTranspartBlackRect(ADJ(xPos, isBottom), 9, width, 12, 1);
     // Draw clock
-    OvDrawString(buf, ADJ(xPos, isBottom) + 2, 11, 255, 255, 255);
+    OvDrawString(buf, ADJ(xPos + 2, isBottom), 11, 255, 255, 255);
+    if (clockType == 1)
+        OvDrawString(g_speriod[period], ADJ(xPos + 33, isBottom), 11, BLANK);
     return (1);
 }

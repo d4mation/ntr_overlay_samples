@@ -6,7 +6,7 @@ extern u32 IoBasePad;
 void debounceKey() 
 {
 	vu32 t;
-	for (t = 0; t < 0x100000; t++) {
+	for (t = 0; t < 0x200000; t++) {
 	}
 }
 
@@ -15,10 +15,14 @@ void black(int x, int y, int xs, int ys)
  	OvDrawTranspartBlackRect(x, y, xs, ys, 3);
 }
 
-u32 getKeyDebounced() 
-{
-	debounceKey();
-	return (*(vu32*)(IoBasePad) ^ 0xFFF) & 0xFFF;
+u32 getKeyDebounced(void) 
+{	
+	u32 key = *(vu32*)(IoBasePad) ^ 0xFFF & 0xFFF;
+	if (key != 0)
+	{
+		debounceKey();
+	}
+	return (key);
 }
 
 s32 showMenu(u8* title, u32 entryCount, u8* captions[], int *selector) 
@@ -27,15 +31,14 @@ s32 showMenu(u8* title, u32 entryCount, u8* captions[], int *selector)
 	u32 i;
 	u8 buf[200];
 	u32 pos = 40;
-	u32 x = 60, key = 0;
+	u32 x = 75, key = 0;
 	u32 drawStart, drawEnd;
 	int select = *selector;
 
 
 
-	black(50, 30, 300, 180);
+	black(65, 30, 270, 180);
 	OvDrawString(title, x, pos, 0, 255, 0);
-	x = 60;
 	pos += 20;
 	drawStart = (select / maxCaptions) * maxCaptions;
 	drawEnd = drawStart + maxCaptions;
