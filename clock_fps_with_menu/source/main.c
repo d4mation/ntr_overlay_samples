@@ -14,14 +14,14 @@ u32         g_clockMode = 2; // 0 = none, 1 = Clock Only, 2 = Clock + Battery, 3
 u32         g_fpsScreen = 0;
 u32         g_fpsCounter = 0; // 0 = disabled, 1 = both screen, 2 = top screen only, 3 = bottom screen only
 
-Result  ptmuInit(void);
-Result  mcuInit(void);
-Result  APT_CheckNew3DS(bool* out);
-int     DrawClockAndBattery(int isBottom, u32 percentage, u32 clockType);
-int     DrawClockOnly(int isBottom, u32 clockType);
-int     DrawFPSCounter(u32 isBottom);
-int     DrawFPSCounterBottom(u32 isBottom, int mode);
-int     OverlayMenu(void);
+Result      ptmuInit(void);
+Result      mcuInit(void);
+Result      APT_CheckNew3DS(bool* out);
+int         DrawClockAndBattery(int isBottom, u32 percentage, u32 clockType);
+int         DrawClockOnly(int isBottom, u32 clockType);
+int         DrawFPSCounter(u32 isBottom);
+int         DrawFPSCounterBottom(u32 isBottom, int mode);
+int         OverlayMenu(void);
 
 /*
 Overlay Callback.

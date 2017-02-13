@@ -138,19 +138,20 @@ void    OvDrawChar(char letter, int posX, int posY, u32 r, u32 g, u32 b)
     }
 }
 
-void    OvDrawString(char *str, int posX, int posY, u32 r, u32 g, u32 b)
+int    OvDrawString(char *str, int posX, int posY, u32 r, u32 g, u32 b)
 {
     while(*str)
     {
         if ((posY + 6 > 240) || (posX + 6 > g_maxWidth))
         {
-            return;
+            return (posY + 12);
         }
 
         OvDrawChar(*str, posX, posY, r, g, b);
         str++;
         posX += 6;    
     }
+    return (posY + 12);
 } 
 
 void    OvDrawCharTiny(char letter, int posX, int posY, u32 r, u32 g, u32 b)
@@ -186,17 +187,18 @@ void    OvDrawCharTiny(char letter, int posX, int posY, u32 r, u32 g, u32 b)
     }
 }
 
-void    OvDrawStringTiny(char *str, int posX, int posY, u32 r, u32 g, u32 b)
+int    OvDrawStringTiny(char *str, int posX, int posY, u32 r, u32 g, u32 b)
 {
     while(*str)
     {
         if ((posY + 4 > 240) || (posX + 4 > g_maxWidth))
         {
-            return;
+            return (posY + 6);
         }
 
         OvDrawCharTiny(*str, posX, posY, r, g, b);
         str++;
         posX += 4;    
     }
-} 
+    return (posY + 6);
+}

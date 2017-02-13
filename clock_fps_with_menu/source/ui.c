@@ -37,7 +37,7 @@ s32 showMenu(u8* title, u32 entryCount, u8* captions[], int *selector)
 
 
 
-	black(65, 30, 270, 180);
+	black(65, 30, 270, 190);
 	OvDrawString(title, x, pos, 0, 255, 0);
 	pos += 20;
 	drawStart = (select / maxCaptions) * maxCaptions;
